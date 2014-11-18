@@ -64,9 +64,11 @@
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
     (.detachAllChildren (.getRootNode app)) 
     (doseq [figure (create-map (level/create-level 5))]
-      (pprint figure)
       (if (:type figure)
-        (let [i (wall/->Wall (:position figure))
+        (let [fname (name (:type figure))
+              protsym (symbol (str "->" (clojure.string/capitalize (name (:type figure)))))
+              realization (ns-resolve (symbol (str "gamejme3.actors." fname)) protsym)
+              i (realization (:position figure))
               ]
                                         ;(.attachChild (make-test-cube (:x figure) (:y figure) (:z figure)  0.5))
           (doto pivot 
