@@ -3,7 +3,7 @@
   (:use clojure.pprint)
   )
 
-(def types #{:fire :ice :block :player})
+(def types #{:fire :ice :wall :player})
 (declare walls-fn)
 (defn create-level [side]
   (let [dim-x side
@@ -21,9 +21,9 @@
   (if (or (= x 0)
           (= y 0)
           (= z 0)
-          (= x dim-x)
-          (= y dim-y)
-          (= z dim-z)) 
-    :block
+          (= x (dec dim-x))
+          (= y (dec dim-y))
+          (= z (dec dim-z))) 
+    :wall
     (blocks-fn x y z))
   )

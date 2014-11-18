@@ -14,6 +14,7 @@
             math.Vector3f
             math.ColorRGBA])
   (:require [gamejme3.actors.proto :as proto]
+            [gamejme3.level-map :as level]
             [gamejme3.actors.wall :as wall])
   (:use clojure.pprint)
   )
@@ -32,10 +33,23 @@
              (dec length)
              (conj result position)))))
 
-(defn create-figure-set [count side]
-  (map 
+(defn create-map [level]
+  (for [x (range (:dim-x level))
+        y (range (:dim-y level))
+        z (range (:dim-z level))
+        ]
+    (let [type-fn (:map-fn level)]
+      {:position {:x x :y y :z z} :type (type-fn x y z)}
+      )
+    )
+  )
+
+(defn create-figure-set [side]
+  (comment map 
    #(create-figure % side) 
-   (range 1 (+ count 1))))
+   (range 1 (+ count 1)))
+  (create-map (level/create-level 5))
+  )
 
 (defn make-sky []
   (SkyFactory/createSky assetManager "Textures/Sky/Bright/BrightSky.dds" false)
@@ -49,15 +63,16 @@
     (.setColor l1 (ColorRGBA/Blue))
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
     (.detachAllChildren (.getRootNode app)) 
-    (doseq [figure (create-figure 5 1)]
+    (doseq [figure (create-map (level/create-level 5))]
       (pprint figure)
-      (let [i (wall/->Wall figure)
-            ]
-        ;(.attachChild (make-test-cube (:x figure) (:y figure) (:z figure)  0.5))
-        (doto pivot 
+      (if (:type figure)
+        (let [i (wall/->Wall (:position figure))
+              ]
+                                        ;(.attachChild (make-test-cube (:x figure) (:y figure) (:z figure)  0.5))
+          (doto pivot 
             (.attachChild (proto/model i assetManager))
-          )
-        )
+            )
+          ))
       )
     
 
