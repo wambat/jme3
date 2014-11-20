@@ -15,6 +15,7 @@
             math.ColorRGBA])
   (:require [gamejme3.actors.proto :as proto]
             [gamejme3.level-map :as level]
+            [gamejme3.controls.keyboard :as keyboard]
             [gamejme3.actors.wall :as wall])
   (:use clojure.pprint)
   )
@@ -63,6 +64,7 @@
     (.setColor l1 (ColorRGBA/Blue))
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
     (.detachAllChildren (.getRootNode app)) 
+    (keyboard/set-bindings (.getInputManager app))
     (doseq [figure (create-map (level/create-level 5))]
       (if (:type figure)
         (let [fname (name (:type figure))
@@ -86,5 +88,5 @@
 
 (defn update [app tpf]
   (let [subj (.getChild (.getRootNode app) "pivot") ] 
-    (.rotate subj 0 (* 2 tpf) 0))
+    (.rotate subj 0 (* 0.1 tpf) 0))
   )
