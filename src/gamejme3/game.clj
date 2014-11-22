@@ -15,14 +15,18 @@
             math.ColorRGBA])
   (:require [gamejme3.actors.proto :as proto]
             [gamejme3.level-map :as level]
-            [gamejme3.controls.keyboard :as keyboard]
-            [gamejme3.actors.wall :as wall])
+            [gamejme3.actions :as actions]
+            [gamejme3.actions.pause :as actions.pause]
+            [gamejme3.actors.wall]
+            [gamejme3.actors.peasant]
+            )
   (:use clojure.pprint)
   )
 
 (def desktop-cfg (.getResource (.getContextClassLoader (Thread/currentThread))
                    "com/jme3/asset/Desktop.cfg"))
 (def assetManager (JmeSystem/newAssetManager desktop-cfg))
+
 
 (defn create-figure [length side]
   (loop [position {:x 0 :y 0 :z 0}
@@ -64,7 +68,7 @@
     (.setColor l1 (ColorRGBA/Blue))
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
     (.detachAllChildren (.getRootNode app)) 
-    (keyboard/set-bindings (.getInputManager app))
+    (actions/set-bindings (.getInputManager app))
     (doseq [figure (create-map (level/create-level 5))]
       (if (:type figure)
         (let [fname (name (:type figure))
@@ -86,7 +90,12 @@
       (.attachChild pivot))
     (.rotate pivot 0.4 0.4 0)))
 
+(defn add-pause-action []
+  
+  )
+
 (defn update [app tpf]
-  (let [subj (.getChild (.getRootNode app) "pivot") ] 
-    (.rotate subj 0 (* 0.1 tpf) 0))
+  (if (not @actions.pause/pause-state)
+    (let [subj (.getChild (.getRootNode app) "pivot") ] 
+      (.rotate subj 0 (* 0.1 tpf) 0)))
   )
