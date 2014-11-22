@@ -4,20 +4,33 @@
   )
 
 (def types #{:fire :ice :wall :player})
-(declare walls-fn)
+(declare walls-fn ground-fn add-peasants-fn)
 (defn create-level [side]
   (let [dim-x side
         dim-y side
         dim-z side
         level {:dim-x side
-             :dim-y side
-             :dim-z side
-             :map-fn (fn [x y z] (walls-fn x y z dim-x dim-y dim-z (fn [_ _ _] nil)))}]
-     level
+               :dim-y side
+               :dim-z side
+               :map-fn (fn [x y z] (some #(% x y z dim-x dim-y dim-z) [ground-fn add-peasants-fn]))}]
+    level
     )
   )
 
-(defn walls-fn [x y z dim-x dim-y dim-z blocks-fn]
+(defn add-peasants-fn [x y z dim-x dim-y dim-z ]
+  (if (and (= z 1)
+           (= y 0)
+           (= x (quot dim-x 2)))
+    :peasant
+    nil))
+
+(defn ground-fn [x y z dim-x dim-y dim-z ]
+  (if (= z 0)
+    :wall
+    nil))
+
+(defn walls-fn [x y z dim-x dim-y dim-z]
+  "creates box around space"
   (if (or (= x 0)
           (= y 0)
           (= z 0)
@@ -25,5 +38,5 @@
           (= y (dec dim-y))
           (= z (dec dim-z))) 
     :wall
-    (blocks-fn x y z))
+    nil)
   )
