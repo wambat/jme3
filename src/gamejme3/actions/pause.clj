@@ -8,7 +8,7 @@
   (:use clojure.pprint)
   )
 
-(def pause-state (atom false))
+(def pause-state (atom true))
 
 (defn get-actions []
   {:pause (fn [is-pressed tpf] (if (= is-pressed true) (swap! pause-state not)))}

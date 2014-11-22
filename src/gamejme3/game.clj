@@ -12,6 +12,7 @@
             scene.shape.Box
             scene.Node
             math.Vector3f
+            math.Quaternion
             math.ColorRGBA])
   (:require [gamejme3.actors.proto :as proto]
             [gamejme3.level-map :as level]
@@ -61,6 +62,18 @@
   )
 
 
+(defn set-camera [cam]
+;Camera Position: (4.8882446, -1.0686046, 6.6186147)
+;Camera Rotation: (0.03566155, 0.9640372, 0.17352314, -0.19811681)
+;Camera Direction: (-0.36960772, 0.3486958, -0.8612788)
+  (let [rot (Quaternion. 0.03566155, 0.9640372, 0.17352314, -0.19811681)
+        loc (Vector3f. 4.8882446, -1.0686046, 6.6186147)]
+
+    (.setLocation cam loc)
+    (.setRotation cam rot)
+    )
+  )
+
 (defn init [app]
   (let [l1 (DirectionalLight.)
         pivot (Node. "pivot")
@@ -68,6 +81,7 @@
     (.setColor l1 (ColorRGBA/Blue))
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
     (.detachAllChildren (.getRootNode app)) 
+    (set-camera (.getCamera app))
     (actions/set-bindings (.getInputManager app))
     (doseq [figure (create-map (level/create-level 5))]
       (if (:type figure)
@@ -90,9 +104,6 @@
       (.attachChild pivot))
     (.rotate pivot 0.4 0.4 0)))
 
-(defn add-pause-action []
-  
-  )
 
 (defn update [app tpf]
   (if (not @actions.pause/pause-state)
