@@ -42,7 +42,7 @@
   (let [jaime (.loadModel asset "assets/Models/Jaime/Jaime.j3o")
         ]
     (.setShadowMode jaime RenderQueue$ShadowMode/CastAndReceive)
-    (.setPosition jaime (Vector3f. x y z))
+    (.move jaime x y z)
     jaime
     )
 )
