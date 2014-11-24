@@ -18,14 +18,14 @@
   )
 
 (defn add-peasants-fn [x y z dim-x dim-y dim-z ]
-  (if (and (= z 1)
-           (= y 0)
+  (if (and (= z 0)
+           (= y 1)
            (= x (quot dim-x 2)))
     :peasant
     nil))
 
 (defn ground-fn [x y z dim-x dim-y dim-z ]
-  (if (= z 0)
+  (if (= y 0)
     :wall
     nil))
 

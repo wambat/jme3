@@ -1,6 +1,7 @@
 (ns gamejme3.actors.peasant
   (:import [com.jme3 app.SimpleApplication
             material.Material
+            animation.AnimControl
             material.RenderState
             material.RenderState$BlendMode
             light.DirectionalLight
@@ -40,9 +41,13 @@
 
 (defn load-monkey [x y z asset]
   (let [jaime (.loadModel asset "assets/Models/Jaime/Jaime.j3o")
+        control (.getControl jaime AnimControl)
+        channel (.createChannel control)
         ]
     (.setShadowMode jaime RenderQueue$ShadowMode/CastAndReceive)
     (.move jaime x y z)
+    (.setAnim channel "Walk")
+    
     jaime
     )
 )
