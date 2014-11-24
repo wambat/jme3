@@ -83,14 +83,14 @@
     (.detachAllChildren (.getRootNode app)) 
     (set-camera (.getCamera app))
     (actions/set-bindings (.getInputManager app))
-    (doseq [figure (create-map (level/create-level 5))]
-      (if (:type figure)
-        (let [fname (name (:type figure))
-              protsym (symbol (str "->" (clojure.string/capitalize (name (:type figure)))))
+    (doseq [map (create-map (level/create-level 5))]
+      (if (:type map)
+        (let [fname (name (:type map))
+              protsym (symbol (str "->" (clojure.string/capitalize (name (:type map)))))
               realization (ns-resolve (symbol (str "gamejme3.actors." fname)) protsym)
-              i (realization (:position figure))
+              i (realization (:position map))
               ]
-                                        ;(.attachChild (make-test-cube (:x figure) (:y figure) (:z figure)  0.5))
+                                        ;(.attachChild (make-test-cube (:x map) (:y map) (:z map)  0.5))
           (doto pivot 
             (.attachChild (proto/model i assetManager))
             )

@@ -9,6 +9,7 @@
             system.JmeSystem
             util.SkyFactory
             renderer.queue.RenderQueue$Bucket
+            renderer.queue.RenderQueue$ShadowMode
             scene.shape.Box
             scene.Node
             math.Vector3f
@@ -37,14 +38,21 @@
     )
   )
 
+(defn load-monkey [x y z asset]
+  (let [jaime (.loadModel asset "assets/Models/Jaime/Jaime.j3o")
+        ]
+    (.setShadowMode jaime RenderQueue$ShadowMode/CastAndReceive)
+    (.setPosition jaime (Vector3f. x y z))
+    jaime
+    )
+)
+
 (defrecord Peasant [params]
   p/IActor
   (model [this asset]
-    (let [color (ColorRGBA. 1 0 0 0.8)
-          side 0.4
-          params (:params this)]
+    (let [params (:params this)]
       (pp/pprint params )
-      (make-test-cube (:x params) (:y params) (:z params) color side asset)
+      (load-monkey (:x params) (:y params) (:z params) asset)
       )
     )
   (get-available-actions [this state] 

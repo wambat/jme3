@@ -1,4 +1,4 @@
-(defproject gamejme3 "0.1.0"
+(defproject gamejme3 "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -37,4 +37,11 @@
                  [com.jme3/noise "3.0.0-SNAPSHOT"]
                  [com.jme3/stack-alloc "3.0.0-SNAPSHOT"]
                  [com.jme3/vecmath "3.0.0-SNAPSHOT"]
-                 [com.jme3/xmlpull-xpp3 "3.0.0-SNAPSHOT"]])
+                 [com.jme3/xmlpull-xpp3 "3.0.0-SNAPSHOT"]]
+  :profiles {:uberjar {:aot :all}
+             :dev {
+                   :dependencies [
+                                  [midje "1.5.1"] 
+                                  ]}}
+  
+  )
