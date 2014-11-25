@@ -39,22 +39,12 @@
              (dec length)
              (conj result position)))))
 
-(defn create-map [level]
-  (for [x (range (:dim-x level))
-        y (range (:dim-y level))
-        z (range (:dim-z level))
-        ]
-    (let [type-fn (:map-fn level)]
-      {:position {:x x :y y :z z} :type (type-fn x y z)}
-      )
-    )
-  )
 
-(defn create-figure-set [side]
+(comment defn create-figure-set [side]
   (comment map 
    #(create-figure % side) 
    (range 1 (+ count 1)))
-  (create-map (level/create-level 5))
+  (level/substanciate-map (level/create-level 5))
   )
 
 (defn make-sky []
@@ -83,7 +73,7 @@
     (.detachAllChildren (.getRootNode app)) 
     (set-camera (.getCamera app))
     (actions/set-bindings (.getInputManager app))
-    (doseq [map (create-map (level/create-level 5))]
+    (doseq [map (level/substanciate-map (level/create-level 5))]
       (if (:type map)
         (let [fname (name (:type map))
               protsym (symbol (str "->" (clojure.string/capitalize (name (:type map)))))

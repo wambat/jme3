@@ -45,7 +45,7 @@
         channel (.createChannel control)
         ]
     (.setShadowMode jaime RenderQueue$ShadowMode/CastAndReceive)
-    (.move jaime x y z)
+    (.move jaime x (- y 0.5) z)
     (.setAnim channel "Walk")
     
     jaime

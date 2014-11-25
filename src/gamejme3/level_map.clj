@@ -5,6 +5,21 @@
 
 (def types #{:fire :ice :wall :player})
 (declare walls-fn ground-fn add-peasants-fn)
+
+(defn substanciate-map [level]
+  (for [x (range (:dim-x level))
+        y (range (:dim-y level))
+        z (range (:dim-z level))
+        ]
+    (let [type-fn (:map-fn level)
+          type (type-fn x y z)]
+      {:position {:x x :y y :z z} 
+       :type type
+       :id (str (name type))}
+      )
+    )
+  )
+
 (defn create-level [side]
   (let [dim-x side
         dim-y side
