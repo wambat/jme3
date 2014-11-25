@@ -3,18 +3,21 @@
   (:use clojure.pprint)
   )
 (def maze1 [[0 1 0 0 0 0 0]
-            [0 1 0 1 0 1 0]
-            [0 1 0 1 0 1 0]
-            [0 1 0 1 0 1 0]
-            [0 0 0 0 0 1 0]])
+            [0 1 0 1 1 1 0]
+            [0 1 0 1 0 0 0]
+            [0 0 0 1 0 1 1]
+            [1 1 1 1 0 0 0]])
 (def start [0 1])
 (def end [6 4])
 
-(defn get-cell-state [map x y] (nth (nth map y) x))
+(defn do-get-cell-state [map x y] (nth (nth map y) x))
+(def get-cell-state (memoize get-cell-state))
 
-(defn get-dim-y [map] (count map))
+(defn do-get-dim-y [map] (count map))
+(def get-dim-y (memoize do-get-dim-y))
 
-(defn get-dim-x [map] (-> map first count))
+(defn do-get-dim-x [map] (-> map first count))
+(def get-dim-x (memoize do-get-dim-x))
 
 (defn manhattan-distance [[x1 y1] [x2 y2]]
   (+ (Math/abs ^Integer (- x2 x1)) (Math/abs ^Integer (- y2 y1))))
@@ -34,8 +37,12 @@
   )
 
 (defn get-edges [m closed-list [x y]]
-  (for [tx (range (- x 1) (+ x 2)) 
-        ty (range (- y 1) (+ y 2))
+  ;tx (range (- x 1) (+ x 2)) 
+  ;ty (range (- y 1) (+ y 2))
+  (for [[tx ty] [ [(- x 1) y ]
+                  [(+ x 1) y ]
+                  [ x (+ y 1) ]
+                  [ x (- y 1) ]]
         :when (and (>= tx 0)
                    (>= ty 0)
                    (<= tx (-> m get-dim-x dec))
@@ -74,22 +81,57 @@
     ))
 
 (defn get-path [m start end]
-  (loop [ol {start {:f 0 :parent nil}}
-         cl {}
-         node start
-         parent nil
-         ]
-    (let [search-results (search-node m ol cl node end parent)
-          cl (first search-results)
-          ol (nth search-results 1)
-          edges (last search-results)
-          ]
-      (cond (some #{end} (map first edges)) [node ol]
-            (not (empty? edges)) (recur ol cl (first (first edges)) node)
-            :else nil)
-    )
-  )
+  (letfn [(goonfn [ol
+                    cl
+                    node
+                    parent
+                    ]
+                 (let [search-results (search-node m ol cl node end parent)
+                       cl (first search-results)
+                       ol (nth search-results 1)
+                       edges (last search-results)
+                       ]
+                   (if (some #{end} (map first edges)) ;found
+                     (loop [n node r []]
+                       (let [ni (get ol n)]
+                         (if (:parent ni)
+                           (recur (:parent ni) (conj r n))
+                           (conj r n))))
+                     (if (not (empty? edges))
+                       (if-let [r (goonfn ol cl (first (first edges)) node)];child
+                         r
+                         (if (not (empty? (rest edges))) 
+                           (recur ol cl (first (nth edges 1)) parent)
+                           nil) ;sibling
+                         )) ;child
+                     )
+                   )
+                 )]
+    (goonfn {start {:f 0 :parent nil}} {} start nil))
+  
 )
+
+(defn draw-map [area start end]
+  (let [path (into #{} (time (get-path area start end)))
+        area (map-indexed
+              (fn [idx-row row]
+                (map-indexed
+                 (fn [idx-col col]
+                   (cond 
+                    (and (= (first start) idx-col)
+                         (= (last start) idx-row)
+                         ) \S
+                           (and (= (first end) idx-col)
+                                (= (last end) idx-row)
+                                ) \E
+                                  (contains? path [idx-col idx-row]) \X
+                                  (= 1 col) \#
+                                  :default \space))
+                 row))
+              area)]
+
+    (doseq [line area]
+      (println line))))
 
 (comment 
 
