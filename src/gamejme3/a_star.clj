@@ -98,12 +98,12 @@
                            (recur (:parent ni) (conj r n))
                            (conj r n))))
                      (if (not (empty? edges))
-                       (if-let [r (goonfn ol cl (first (first edges)) node)];child
+                       (if-let [r (goonfn ol cl (first (first edges)) node)] ;search child
                          r
                          (if (not (empty? (rest edges))) 
                            (recur ol cl (first (nth edges 1)) parent)
-                           nil) ;sibling
-                         )) ;child
+                           nil) ;or sibling
+                         )) 
                      )
                    )
                  )]
