@@ -50,26 +50,27 @@
   (let [
         closed-list* (assoc closed-list node true)
         edges (get-edges m closed-list* node)
-        edge-list (apply hash-map (mapcat (fn [n]
-                              (let [
-                                    df (+ (calc-h m n target)
-                                          (calc-delta-g m n target))
-                                    f (if parent
-                                        (+ df (:f parent))
-                                        df)
 
-                                    ]
-                                [n {:f f :parent node}] 
-                                )
-                              ) edges))
+        edge-list (sort-by (comp :f last) (map (fn [n]
+                                          (let [
+                                                df (+ (calc-h m n target)
+                                                      (calc-delta-g m n target))
+                                                f (if parent
+                                                    (+ df (:f parent))
+                                                    df)
+
+                                                ]
+                                            [n {:f f :parent node}] 
+                                            )
+                                          ) edges))
+        edge-list-hash (apply hash-map (apply concat edge-list))
 
         open-list* (merge-with (fn [old new] 
                                  (if (< (:f new) (:f old))
                                    new
                                    old))
-                               open-list edge-list)
-        ]
-    [closed-list* edge-list open-list*]
+                               open-list edge-list-hash)]
+    [closed-list* open-list* edge-list]
     ))
 
 (defn get-path [m start end]
