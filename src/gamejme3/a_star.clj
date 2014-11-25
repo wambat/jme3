@@ -50,13 +50,12 @@
   (let [
         closed-list* (assoc closed-list node true)
         edges (get-edges m closed-list* node)
-
         edge-list (sort-by (comp :f last) (map (fn [n]
                                           (let [
                                                 df (+ (calc-h m n target)
                                                       (calc-delta-g m n target))
                                                 f (if parent
-                                                    (+ df (:f parent))
+                                                    (+ df (:f (get open-list parent)))
                                                     df)
 
                                                 ]
@@ -70,13 +69,27 @@
                                    new
                                    old))
                                open-list edge-list-hash)]
+    
     [closed-list* open-list* edge-list]
     ))
 
 (defn get-path [m start end]
-
+  (loop [ol {start {:f 0 :parent nil}}
+         cl {}
+         node start
+         parent nil
+         ]
+    (let [search-results (search-node m ol cl node end parent)
+          cl (first search-results)
+          ol (nth search-results 1)
+          edges (last search-results)
+          ]
+      (cond (some #{end} (map first edges)) [node ol]
+            (not (empty? edges)) (recur ol cl (first (first edges)) node)
+            :else nil)
+    )
   )
-
+)
 
 (comment 
 
