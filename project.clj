@@ -9,6 +9,8 @@
                  "https://oss.sonatype.org/content/repositories/snapshots/"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
+                 [org.clojure/data.priority-map "0.0.5"]
+                 ;JME3
                  [com.jme3/jmonkeyengine3 "3.0.0.20140325-SNAPSHOT"]
                  [com.jme3/jME3-testdata "3.0.0.20140325-SNAPSHOT"]
                  [com.jme3/jME3-terrain "3.0.0.20140325-SNAPSHOT"]
