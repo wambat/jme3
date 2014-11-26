@@ -11,7 +11,8 @@
   (:use clojure.pprint)
   )
 
-(def mappings {:pause (KeyTrigger. KeyInput/KEY_SPACE)})
+(def mappings {:pause (KeyTrigger. KeyInput/KEY_SPACE)
+               :reinit (KeyTrigger. KeyInput/KEY_R)})
 (defn get-mappings []
   mappings
   )

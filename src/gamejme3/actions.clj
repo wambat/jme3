@@ -5,9 +5,11 @@
             input.controls.Trigger
             input.controls.ActionListener
             ])
-  (:require [gamejme3.actions.pause :as pause-action]
-            [gamejme3.controls.keyboard :as keyboard]
-            )
+  (:require 
+   [gamejme3.actions.pause :as pause-action]
+   [gamejme3.actions.reinit :as reinit-action]
+   [gamejme3.controls.keyboard :as keyboard]
+   )
   (:use clojure.pprint)
   )
 
@@ -21,7 +23,8 @@
   )
 
 (def mappings (keyboard/get-mappings))
-(def actions (pause-action/get-actions))
+(def actions (merge (pause-action/get-actions)
+                    (reinit-action/get-actions)))
 
 (defn set-bindings [input-manager]
   (.reset input-manager)

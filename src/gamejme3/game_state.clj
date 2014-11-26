@@ -11,6 +11,8 @@
   (:use clojure.pprint)
   )
 
+(def current-board (atom {}))
+
 (def example-state 
   [{:op :reset-map 
     :value (level/substanciate-map (level/create-level 5))}

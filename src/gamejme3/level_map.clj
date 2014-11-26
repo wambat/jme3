@@ -15,7 +15,7 @@
           type (type-fn x y z)]
       {:position {:x x :y y :z z} 
        :type type
-       :id (str (name type))}
+       :id (if type (name type) nil)}
       )
     )
   )

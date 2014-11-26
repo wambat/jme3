@@ -17,16 +17,18 @@
   (:require [gamejme3.actors.proto :as proto]
             [gamejme3.level-map :as level]
             [gamejme3.actions :as actions]
+            [gamejme3.game-state :as state]
             [gamejme3.actions.pause :as actions.pause]
+            [gamejme3.actions.reinit :as actions.reinit]
             [gamejme3.actors.wall]
             [gamejme3.actors.peasant]
             )
   (:use clojure.pprint)
   )
 
-(def desktop-cfg (.getResource (.getContextClassLoader (Thread/currentThread))
+(defonce desktop-cfg (.getResource (.getContextClassLoader (Thread/currentThread))
                    "com/jme3/asset/Desktop.cfg"))
-(def assetManager (JmeSystem/newAssetManager desktop-cfg))
+(defonce assetManager (JmeSystem/newAssetManager desktop-cfg))
 
 
 (defn create-figure [length side]
@@ -68,19 +70,18 @@
   (let [l1 (DirectionalLight.)
         pivot (Node. "pivot")
         ]
-    (.setColor l1 (ColorRGBA/Blue))
+    (.setColor l1 (ColorRGBA/Red))
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
     (.detachAllChildren (.getRootNode app)) 
     (set-camera (.getCamera app))
     (actions/set-bindings (.getInputManager app))
-    (doseq [map (level/substanciate-map (level/create-level 5))]
+    (doseq [map (level/substanciate-map (level/create-level 7))]
       (if (:type map)
         (let [fname (name (:type map))
               protsym (symbol (str "->" (clojure.string/capitalize (name (:type map)))))
               realization (ns-resolve (symbol (str "gamejme3.actors." fname)) protsym)
               i (realization (:position map))
               ]
-                                        ;(.attachChild (make-test-cube (:x map) (:y map) (:z map)  0.5))
           (doto pivot 
             (.attachChild (proto/model i assetManager))
             )
@@ -96,7 +97,11 @@
 
 
 (defn update [app tpf]
+  (if @actions.reinit/reinit-state
+    (do (reset! actions.reinit/reinit-state false)
+        (init app))
+    )
   (if (not @actions.pause/pause-state)
     (let [subj (.getChild (.getRootNode app) "pivot") ] 
-      (.rotate subj 0 (* 0.1 tpf) 0)))
+      (.rotate subj 0 (* 0.3 tpf) 0)))
   )

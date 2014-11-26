@@ -18,11 +18,12 @@
   )
 
  
-(def ^:dynamic *app-settings* (doto (AppSettings. true)
+(defonce ^:dynamic *app-settings* (doto (AppSettings. true)
                                 (.setFullscreen false)
                                 (.setTitle "jm-tut1")))
 
 (def speed 5)
+
 
 
 
@@ -45,4 +46,6 @@
     (.setShowSettings false)
     (.setPauseOnLostFocus false)
     (.setSettings *app-settings*)
-    (.start)))
+    (.start)
+    )
+  )
