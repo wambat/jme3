@@ -14,15 +14,13 @@
             math.Vector3f
             math.Quaternion
             math.ColorRGBA])
-  (:require [gamejme3.actors.proto :as proto]
-            [gamejme3.level-map :as level]
-            [gamejme3.actions :as actions]
-            [gamejme3.game-state :as state]
-            [gamejme3.actions.pause :as actions.pause]
-            [gamejme3.actions.reinit :as actions.reinit]
-            [gamejme3.actors.wall]
-            [gamejme3.actors.peasant]
-            )
+  (:require 
+   [gamejme3.level-map :as level]
+   [gamejme3.actions :as actions]
+   [gamejme3.game-state :as state]
+   [gamejme3.actions.pause :as actions.pause]
+   [gamejme3.actions.reinit :as actions.reinit]
+   )
   (:use clojure.pprint)
   )
 
@@ -75,18 +73,7 @@
     (.detachAllChildren (.getRootNode app)) 
     (set-camera (.getCamera app))
     (actions/set-bindings (.getInputManager app))
-    (doseq [map (level/substanciate-map (level/create-level 7))]
-      (if (:type map)
-        (let [fname (name (:type map))
-              protsym (symbol (str "->" (clojure.string/capitalize (name (:type map)))))
-              realization (ns-resolve (symbol (str "gamejme3.actors." fname)) protsym)
-              i (realization (:position map))
-              ]
-          (doto pivot 
-            (.attachChild (proto/model i assetManager))
-            )
-          ))
-      )
+    (state/process-op (first state/example-state) pivot assetManager)
     
 
     (doto (.getRootNode app) 

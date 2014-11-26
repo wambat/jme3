@@ -6,7 +6,7 @@
             input.controls.ActionListener
             ])
   (:require [gamejme3.level-map :as level]
-            [gamejme3.controls.keyboard :as keyboard]
+            [gamejme3.ops.reset-map :as reset-map]
             )
   (:use clojure.pprint)
   )
@@ -30,3 +30,14 @@
    {:op :attack
     :value {:id :peasant}}])
 
+
+(defmulti process-op 
+  (fn [entry _ _] (:op entry)))
+
+(defmethod process-op :reset-map [{value :value} scene-pivot asset-manager]
+  (reset-map/reset-map value scene-pivot asset-manager)
+  )
+
+(defmethod process-op :default [val _ _]
+  (throw (IllegalArgumentException. 
+          (str "Unknown op " (:op val)))))
