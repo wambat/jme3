@@ -42,9 +42,9 @@
   (model [this asset]
     (let [color (ColorRGBA. (rand) (rand) (rand) 0.8)
           side 0.4
-          params (:params this)]
-      (pp/pprint params )
-      (make-test-cube (:x params) (:y params) (:z params) color side asset)
+          pos (:position params)]
+      (pp/pprint params)
+      (make-test-cube (:x pos) (:y pos) (:z pos) color side asset)
       )
     )
   (get-available-actions [this state] 

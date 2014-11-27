@@ -13,7 +13,15 @@
             scene.Node
             math.Vector3f
             math.Quaternion
-            math.ColorRGBA])
+            math.ColorRGBA
+            animation.AnimationFactory
+            animation.LoopMode
+            cinematic.Cinematic
+            cinematic.MotionPath
+            cinematic.PlayState
+            cinematic.events.AnimationEvent
+            cinematic.events.MotionEvent
+            ])
   (:require 
    [gamejme3.level-map :as level]
    [gamejme3.actions :as actions]
@@ -67,13 +75,16 @@
 (defn init [app]
   (let [l1 (DirectionalLight.)
         pivot (Node. "pivot")
+        cinematic (Cinematic. (.getRootNode app))
         ]
+    (.attach (.getStateManager app) cinematic)
     (.setColor l1 (ColorRGBA/Red))
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
     (.detachAllChildren (.getRootNode app)) 
     (set-camera (.getCamera app))
     (actions/set-bindings (.getInputManager app))
-    (state/process-op (first state/example-state) pivot assetManager)
+    (state/process-op (first state/example-state) pivot assetManager cinematic)
+    ;(state/process-op (second state/example-state) pivot assetManager cinematic)
     
 
     (doto (.getRootNode app) 

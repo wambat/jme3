@@ -16,7 +16,7 @@
       (let [fname (name (:type mapitem))
             protsym (symbol (str "->" (clojure.string/capitalize (name (:type mapitem)))))
             realization (ns-resolve (symbol (str "gamejme3.actors." fname)) protsym)
-            i (realization (:position mapitem))
+            i (realization mapitem)
             ]
         (doto scene-pivot 
           (.attachChild (proto/model i asset-manager))

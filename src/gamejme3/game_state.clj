@@ -32,12 +32,22 @@
 
 
 (defmulti process-op 
-  (fn [entry _ _] (:op entry)))
+  (fn [entry _ _ _] (:op entry)))
 
-(defmethod process-op :reset-map [{value :value} scene-pivot asset-manager]
+(defmethod process-op :reset-map [{value :value} scene-pivot asset-manager _]
   (reset-map/reset-map value scene-pivot asset-manager)
   )
 
-(defmethod process-op :default [val _ _]
+(defmethod process-op :walk [{value :value} scene-pivot asset-manager cinematic]
+  (let [node (.getChild scene-pivot "peasant")
+        ;anim-event (AnimationEvent. node "Walk" 3 )
+        ]
+    ;cinematic.enqueueCinematicEvent(new AnimationEvent(jaime, "Idle",3, LoopMode.DontLoop));
+    ;cinematic.play();
+    
+    )
+  )
+
+(defmethod process-op :default [val _ _ _]
   (throw (IllegalArgumentException. 
           (str "Unknown op " (:op val)))))

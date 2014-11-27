@@ -47,7 +47,6 @@
     (.setShadowMode jaime RenderQueue$ShadowMode/CastAndReceive)
     (.move jaime x (- y 0.5) z)
     (.setAnim channel "Walk")
-    
     jaime
     )
 )
@@ -55,9 +54,13 @@
 (defrecord Peasant [params]
   p/IActor
   (model [this asset]
-    (let [params (:params this)]
-      (pp/pprint params )
-      (load-monkey (:x params) (:y params) (:z params) asset)
+    (let [pos (:position params)
+          spatial (load-monkey (:x pos) (:y pos) (:z pos) asset)]
+
+      (pp/pprint "Peasant::" )
+      (pp/pprint params)
+      (.setName spatial (:id params) )
+      spatial
       )
     )
   (get-available-actions [this state] 
