@@ -7,6 +7,9 @@
             ])
   (:require [gamejme3.level-map :as level]
             [gamejme3.ops.reset-map :as reset-map]
+            [gamejme3.actors.proto :as proto]
+            [gamejme3.actors.wall]
+            [gamejme3.actors.peasant]
             )
   (:use clojure.pprint)
   )
@@ -42,6 +45,7 @@
   (let [node (.getChild scene-pivot "peasant")
         ;anim-event (AnimationEvent. node "Walk" 3 )
         ]
+    (pprint node)
     ;cinematic.enqueueCinematicEvent(new AnimationEvent(jaime, "Idle",3, LoopMode.DontLoop));
     ;cinematic.play();
     

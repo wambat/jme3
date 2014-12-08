@@ -34,6 +34,7 @@
 
 (defonce desktop-cfg (.getResource (.getContextClassLoader (Thread/currentThread))
                    "com/jme3/asset/Desktop.cfg"))
+
 (defonce assetManager (JmeSystem/newAssetManager desktop-cfg))
 
 
@@ -75,19 +76,23 @@
 (defn init [app]
   (let [l1 (DirectionalLight.)
         pivot (Node. "pivot")
-        cinematic (Cinematic. (.getRootNode app))
+        root (.getRootNode app)
+        cinematic (Cinematic. root)
         ]
     (.attach (.getStateManager app) cinematic)
+    (.clear (.getWorldLightList root))
+    (.clear (.getLocalLightList root))
+    (.detachAllChildren root) 
+    
     (.setColor l1 (ColorRGBA/Red))
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
-    (.detachAllChildren (.getRootNode app)) 
     (set-camera (.getCamera app))
     (actions/set-bindings (.getInputManager app))
     (state/process-op (first state/example-state) pivot assetManager cinematic)
-    ;(state/process-op (second state/example-state) pivot assetManager cinematic)
+    (state/process-op (second state/example-state) pivot assetManager cinematic)
     
 
-    (doto (.getRootNode app) 
+    (doto root
       (.attachChild (make-sky))
       (.addLight l1)
       (.attachChild pivot))
