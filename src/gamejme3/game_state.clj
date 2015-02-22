@@ -4,6 +4,11 @@
             input.controls.KeyTrigger
             input.controls.Trigger
             input.controls.ActionListener
+            cinematic.events.AnimationEvent
+            cinematic.events.AnimationEvent
+            animation.AnimControl
+            animation.AnimationFactory
+            animation.LoopMode
             ])
   (:require [gamejme3.level-map :as level]
             [gamejme3.ops.reset-map :as reset-map]
@@ -42,13 +47,29 @@
   )
 
 (defmethod process-op :walk [{value :value} scene-pivot asset-manager cinematic]
-  (let [node (.getChild scene-pivot "peasant")
-        ;anim-event (AnimationEvent. node "Walk" 3 )
+  (let [id (-> value :id name)
+        path (:path value)
+        node (.getChild scene-pivot id)
+        control (.getControl node AnimControl)
+        channel (.createChannel control)
         ]
-    (pprint node)
-    ;cinematic.enqueueCinematicEvent(new AnimationEvent(jaime, "Idle",3, LoopMode.DontLoop));
-    ;cinematic.play();
+    (pprint "Playing cinematic")
+    (pprint path)
+    (.clearChannels control)
     
+    (doseq [[index point] (map-indexed vector path)]
+      (let [anim-event (AnimationEvent. node "Walk" 3 )
+            anim-factory (AnimationFactory. 0.7 (str "move" index))]
+        (pprint "Playing step")
+        (pprint index)
+        (pprint point)
+        (.enqueueCinematicEvent cinematic anim-event)
+        )
+      )
+    (.fitDuration cinematic)
+    (.setSpeed cinematic 1.0)
+    (.setLoopMode cinematic LoopMode/DontLoop)
+    (.play cinematic)
     )
   )
 

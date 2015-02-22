@@ -73,18 +73,17 @@
     )
   )
 
+(declare clear-stage)
+
 (defn init [app]
   (let [l1 (DirectionalLight.)
         pivot (Node. "pivot")
         root (.getRootNode app)
         cinematic (Cinematic. root)
         ]
+    (clear-stage root)
     (.attach (.getStateManager app) cinematic)
-    (.clear (.getWorldLightList root))
-    (.clear (.getLocalLightList root))
-    (.detachAllChildren root) 
-    
-    (.setColor l1 (ColorRGBA/Red))
+    (.setColor l1 (ColorRGBA/White))
     (.setDirection l1 (.normalizeLocal (Vector3f. 1 0 -2)))
     (set-camera (.getCamera app))
     (actions/set-bindings (.getInputManager app))
@@ -107,4 +106,10 @@
   (if (not @actions.pause/pause-state)
     (let [subj (.getChild (.getRootNode app) "pivot") ] 
       (.rotate subj 0 (* 0.3 tpf) 0)))
+  )
+
+(defn clear-stage [root]
+  (.clear (.getWorldLightList root))
+  (.clear (.getLocalLightList root))
+  (.detachAllChildren root) 
   )
