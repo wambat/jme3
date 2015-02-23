@@ -44,6 +44,7 @@
                     Util/readAll))
 
 (def db-uri "datomic:mem://game")
+(def db-uri "datomic:dev://localhost:4334/game0")
 
 (d/delete-database db-uri)
 (d/create-database db-uri)

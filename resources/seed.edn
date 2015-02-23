@@ -1,15 +1,18 @@
-;; Example player
-[{:db/id #db/id[:db.part/user]
-  :player/name "wambat"}]
 
 ;; Example spatials
-[{:db/id #db/id[:db.part/user -1]
+[
+;; Example player
+ {:db/id #db/id[:db.part/user -1]
+  :player/name "wambat"}
+
+ {:db/id #db/id[:db.part/user]
   :spatial/type :peasant 
   :spatial/x 1N
   :spatial/y 2N
   :spatial/params {:spatial-param/name :health 
                    :spatial-param/value 100N}
   :spatial/hand #db/id[:db.part/user -1]}
+
  {:db/id #db/id[:db.part/user]
   :spatial/type :peasant 
   :spatial/x 2N

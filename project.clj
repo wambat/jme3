@@ -5,12 +5,16 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :jvm-opts ["-Xmx512m"]
   :main gamejme3.core
-  :repositories {"oss-sonatype" 
+  :repositories {
+                 "my.datomic.com" {:url "https://my.datomic.com/repo"
+                                   :creds :gpg}
+                 "oss-sonatype" 
                  "https://oss.sonatype.org/content/repositories/snapshots/"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.clojure/data.priority-map "0.0.5"]
-                 [com.datomic/datomic-free "0.9.5130"]
+                 ;[com.datomic/datomic-free "0.9.5130"]
+                 [com.datomic/datomic-pro "0.9.5130"]
                  ;JME3
                  [com.jme3/jmonkeyengine3 "3.0.0.20140325-SNAPSHOT"]
                  [com.jme3/jME3-testdata "3.0.0.20140325-SNAPSHOT"]
@@ -41,6 +45,7 @@
                  [com.jme3/stack-alloc "3.0.0.20140325-SNAPSHOT"]
                  [com.jme3/vecmath "3.0.0.20140325-SNAPSHOT"]
                  [com.jme3/xmlpull-xpp3 "3.0.0.20140325-SNAPSHOT"]]
+
   :profiles {:uberjar {:aot :all}
              :dev {
                    :dependencies 
