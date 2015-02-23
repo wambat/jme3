@@ -10,6 +10,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.clojure/data.priority-map "0.0.5"]
+                 [com.datomic/datomic-free "0.9.5130"]
                  ;JME3
                  [com.jme3/jmonkeyengine3 "3.0.0.20140325-SNAPSHOT"]
                  [com.jme3/jME3-testdata "3.0.0.20140325-SNAPSHOT"]
@@ -42,8 +43,5 @@
                  [com.jme3/xmlpull-xpp3 "3.0.0.20140325-SNAPSHOT"]]
   :profiles {:uberjar {:aot :all}
              :dev {
-                   :dependencies [
-                                  [midje "1.5.1"] 
-                                  ]}}
-  
-  )
+                   :dependencies 
+                   [[midje "1.5.1"]]}})

@@ -14,8 +14,7 @@
             math.Vector3f
             math.ColorRGBA])
   (:require [gamejme3.game :as game])
-  (:use clojure.pprint)
-  )
+  (:use clojure.pprint))
 
  
 (defonce ^:dynamic *app-settings* (doto (AppSettings. true)
@@ -24,28 +23,22 @@
 
 (def speed 5)
 
-
-
-
-
 (def app (proxy [SimpleApplication] []
-             (simpleInitApp []
-               (org.lwjgl.input.Mouse/setGrabbed false)
-               (game/init this))
-             (simpleUpdate [tpf]
-               (game/update this tpf))
-))
+           (simpleInitApp []
+             (org.lwjgl.input.Mouse/setGrabbed false)
+             (game/init this))
+
+           (simpleUpdate [tpf]
+             (game/update this tpf))))
 
 
 (defn stop []
   (doto app
-    (.stop))
-  )
+    (.stop)))
+
 (defn -main [& args]
   (doto app
     (.setShowSettings false)
     (.setPauseOnLostFocus false)
     (.setSettings *app-settings*)
-    (.start)
-    )
-  )
+    (.start)))

@@ -1,26 +1,64 @@
 (ns gamejme3.game-state
-  (:import [com.jme3 app.SimpleApplication
-            input.KeyInput
-            input.controls.KeyTrigger
-            input.controls.Trigger
-            input.controls.ActionListener
-            cinematic.events.AnimationEvent
-            cinematic.events.AnimationEvent
-            animation.AnimControl
-            animation.AnimationFactory
-            animation.LoopMode
-            ])
-  (:require [gamejme3.level-map :as level]
-            [gamejme3.ops.reset-map :as reset-map]
-            [gamejme3.actors.proto :as proto]
-            [gamejme3.actors.wall]
-            [gamejme3.actors.peasant]
-            )
-  (:use clojure.pprint)
-  )
+  (:import 
+   datomic.Util
+   [com.jme3 app.SimpleApplication
+    input.KeyInput
+    input.controls.KeyTrigger
+    input.controls.Trigger
+    input.controls.ActionListener
+    cinematic.events.AnimationEvent
+    cinematic.events.AnimationEvent
+    animation.AnimControl
+    animation.AnimationFactory
+    animation.LoopMode])
+  (:require 
+   [datomic.api :as d]
+   [clojure.java.io :as io]
+   [clojure.edn :as edn]
+   [gamejme3.level-map :as level]
+   [gamejme3.ops.reset-map :as reset-map]
+   [gamejme3.actors.proto :as proto]
+   [gamejme3.actors.wall]
+   [gamejme3.actors.peasant])
+  (:use clojure.pprint))
+
+(defn transact-all
+  "Load and run all transactions from f, where f is any
+   resource that can be opened by io/reader."
+  [conn f]
+  (loop [n 0
+         [tx & more] f]
+    (if tx
+      (recur (+ n (count (:tx-data  @(d/transact conn tx))))
+             more)
+      {:datoms n})))
+
+(def db-schema (->> "schema.edn"
+                    io/resource
+                    io/reader
+                    Util/readAll))
+
+(def db-seed (->> "seed.edn"
+                    io/resource
+                    io/reader
+                    Util/readAll))
+
+(def db-uri "datomic:mem://game")
+
+(d/delete-database db-uri)
+(d/create-database db-uri)
+
+(def db-conn (d/connect db-uri))
+
+(transact-all db-conn db-schema)
+(transact-all db-conn db-seed)
+
+
+(def db-with-schema (d/db db-conn))
+
+
 
 (def current-board (atom {}))
-
 (def example-state 
   [{:op :reset-map 
     :value (level/substanciate-map (level/create-level 5))}
@@ -58,7 +96,7 @@
     (.clearChannels control)
     
     (doseq [[index point] (map-indexed vector path)]
-      (let [anim-event (AnimationEvent. node "Walk" 3 )
+      (let [anim-event (AnimationEvent. node "Walk" 3)
             anim-factory (AnimationFactory. 0.7 (str "move" index))]
         (pprint "Playing step")
         (pprint index)
