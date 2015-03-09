@@ -33,6 +33,13 @@
   :db/cardinality :db.cardinality/one
   :db/index true
   :db.install/_attribute :db.part/db}
+ {:db/id #db/id[:db.part/db]
+  :db/ident :spatial/animation
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db/isComponent true
+  :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
   :db/ident :spatial/params
@@ -54,4 +61,16 @@
   :db/index true
   :db.install/_attribute :db.part/db}]
 
-
+[;;Animations
+ {:db/id #db/id[:db.part/db]
+  :db/ident :animation/type
+  :db/valueType :db.type/keyword
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db.install/_attribute :db.part/db}
+ {:db/id #db/id[:db.part/db]
+  :db/ident :animation/params
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db.install/_attribute :db.part/db}]

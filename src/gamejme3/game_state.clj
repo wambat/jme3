@@ -74,14 +74,12 @@
     (while true
       (let [tx (async/<!! tap-ch)]
         (pprint tx)
-        (pprint (d/q '[:find ?e ?tx
+        (pprint (d/q '[:find ?tx
                        :in $db $tx
                        :where 
                        [$tx ?e ?a ?v ?tx]
-                       [(= ?dbv :spatial/type)]
-                       [$db ?a :db/ident ?dbv]
-                       ] (:db-before tx) (:tx-data tx))) 
-        ))))
+                       [$db ?a :db/ident :spatial/animation]
+                       ] (:db-before tx) (:tx-data tx)))))))
 
 (transact-all db-conn db-seed)
 

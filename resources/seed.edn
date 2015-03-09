@@ -11,6 +11,8 @@
   :spatial/y 2N
   :spatial/params {:spatial-param/name :health 
                    :spatial-param/value 100N}
+
+  :spatial/animation {:animation/type :add}
   :spatial/hand #db/id[:db.part/user -1]}
 
  {:db/id #db/id[:db.part/user]
@@ -19,4 +21,15 @@
   :spatial/y 3N
   :spatial/params {:spatial-param/name :health 
                    :spatial-param/value 50N}
+  :spatial/animation {:animation/type :add}
   :spatial/hand #db/id[:db.part/user -1]}]
+
+
+
+
+
+
+
+
+
+
