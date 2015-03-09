@@ -15,12 +15,13 @@
    [datomic.api :as d]
    [clojure.java.io :as io]
    [clojure.edn :as edn]
+   [clojure.core.async :refer [mult go tap untap chan alt! >! <! filter> onto-chan pipe close!] :as async]
    [gamejme3.level-map :as level]
    [gamejme3.ops.reset-map :as reset-map]
    [gamejme3.actors.proto :as proto]
+   [clojure.pprint :refer :all]
    [gamejme3.actors.wall]
-   [gamejme3.actors.peasant])
-  (:use clojure.pprint))
+   [gamejme3.actors.peasant]))
 
 (defn transact-all
   "Load and run all transactions from f, where f is any
@@ -43,8 +44,8 @@
                     io/reader
                     Util/readAll))
 
-(def db-uri "datomic:mem://game")
 (def db-uri "datomic:dev://localhost:4334/game0")
+(def db-uri "datomic:mem://game")
 
 (d/delete-database db-uri)
 (d/create-database db-uri)
@@ -52,6 +53,29 @@
 (def db-conn (d/connect db-uri))
 
 (transact-all db-conn db-schema)
+
+(def tx-chan (chan))
+(def tx-chan-bcast (mult tx-chan))
+;;Setting up TX watching thread
+(async/thread
+  (try
+    (let [queue (d/tx-report-queue db-conn)]
+      (while true
+        (let [report (.take queue)]
+          ;(println "TX:")
+          ;(pprint report)
+          (async/>!! tx-chan report))))
+    (catch Exception e
+          (pprint e)
+          (throw e))))
+
+(async/thread
+  (let [tap-ch (tap tx-chan-bcast (chan))]
+    (while true
+      (let [tx (async/<!! tap-ch)]
+        (pprint (d/q '[:find ?e :where [?e :spatial/type]] (:tx-data tx)))
+        (pprint (:tx-data tx))))))
+
 (transact-all db-conn db-seed)
 
 
