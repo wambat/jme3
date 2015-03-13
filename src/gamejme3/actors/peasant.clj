@@ -19,26 +19,6 @@
              [clojure.pprint :as pp])
   )
 
-(defn make-test-cube [x y z color side asset]
-  (pp/pprint (str x ))
-  (pp/pprint (str y ))
-  (pp/pprint (str z ))
-  (pp/pprint (str side ))
-  (pp/pprint (str asset))
-  (Box. (Vector3f. x y z) side side side)
-  (let [b1 (Box. (Vector3f. x y z) side side side)
-        b1geom (Geometry. "Box" b1)
-        b1mat (Material. asset
-                         "Common/MatDefs/Misc/Unshaded.j3md")
-        ]
-    (.setColor b1mat "Color" color)
-    (.setBlendMode (.getAdditionalRenderState  b1mat) RenderState$BlendMode/Alpha ) 
-    (.setQueueBucket b1geom RenderQueue$Bucket/Transparent)
-    (.setMaterial b1geom b1mat)
-    b1geom
-    )
-  )
-
 (defn load-monkey [x y z asset]
   (let [jaime (.loadModel asset "assets/Models/Jaime/Jaime.j3o")
         control (.getControl jaime AnimControl)
@@ -64,7 +44,7 @@
       )
     )
   (get-available-actions [this state] 
-    [:idle]
+    [:idle :walk]
     )
   (get-animation-fn-for-action [this action]
     (comment case action
