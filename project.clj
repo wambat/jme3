@@ -13,9 +13,11 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.clojure/data.priority-map "0.0.5"]
+                 [clojure-lanterna "0.9.4"]
                  ;[com.datomic/datomic-free "0.9.5130"]
                  [com.datomic/datomic-pro "0.9.5130"]
                  [mvxcvi/puget "0.7.1"]
+                 [reduce-fsm "0.1.3"]
                  [com.taoensso/timbre "3.4.0"]
                  ;JME3
                  [com.jme3/jmonkeyengine3 "3.0.0.20140325-SNAPSHOT"]
