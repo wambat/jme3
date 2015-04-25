@@ -17,7 +17,7 @@
                  ;[com.datomic/datomic-free "0.9.5130"]
                  [com.datomic/datomic-pro "0.9.5130"]
                  [mvxcvi/puget "0.7.1"]
-                 [reduce-fsm "0.1.3"]
+                 [automat "0.1.3"]
                  [com.taoensso/timbre "3.4.0"]
                  ;JME3
                  [com.jme3/jmonkeyengine3 "3.0.0.20140325-SNAPSHOT"]

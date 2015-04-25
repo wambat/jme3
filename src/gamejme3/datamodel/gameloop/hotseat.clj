@@ -1,57 +1,46 @@
 (ns gamejme3.datamodel.gameloop.hotseat
   (:require [gamejme3.datamodel.actors.proto :refer :all]
-            [reduce-fsm :as fsm]))
+            [automat.core :as a]
+            [automat.viz :refer (view)]))
 
-(defn on-end-turn [val & _]
-  (update-in val [:hand] #(if (= % :red)
+(defn inc-turn [st]
+  (update-in st [:turn] inc))
+
+(defn on-end-turn [state _]
+  (-> state 
+      (update-in [:hand] #(if (= % :red)
                             :blue
-                            :red)))
+                            :red))
+      inc-turn))
 
-(fsm/defsm command-fsm
-  [[:make-command
-    [{:action :end-turn}] -> {:action on-end-turn} :end-command
-    [{:action :unit-selected}]  -> :select-action]
+(defn on-new-state [_ _]
+  {:hand :red
+   :turn 0})
 
-   [:select-action
-    [{:action :move-selected}] -> :select-move-target
-    [{:action :attack-selected}] -> :select-attack-target
-   ; [{:action :wait}] -> {:action on-wait} :make-command
-   ; [{:action :mode-changed}] -> {:action on-mode-changed} :select-action
-    ]
+(defn on-make-move [state action]
+  (-> state 
+      (assoc :action (:action action))
+      (assoc :last-action-params (:action-params action))))
 
-   [:select-attack-target
-    [{:action :target-canceled}] -> :select-action
-   ; [{:action :target-selected}] -> {:action on-attack-target-selected} :make-command
-    ]
-   
-   [:select-move-target
-   ; [{:action :target-selected}] -> {:action on-move-target-selected} :select-action
-    [{:action :target-canceled}] -> :select-action]
-   [:end-command {:is-terminal true}]])
 
-(defn rep-ls [state ux]
-  (.draw-board! ux state)
-  (cons state (lazy-seq 
-               (rep-ls (.get-input ux state) ux))))
+(def fsm (a/compile [[:start (a/$ :on-start)] 
+                     (a/* (a/or [:move (a/$ :on-make-move)]
+                                [:turn (a/$ :on-end-turn)]))
+                     :quit]
+                    {:signal :action
+                     :reducers {:on-start on-new-state
+                                :on-make-move on-make-move
+                                :on-end-turn on-end-turn}}))
+
+(def fsm-adv (partial a/advance fsm))
 
 (defn main-loop [initial-state ux]
-  (doall (take 5 (command-fsm (rep-ls initial-state ux)))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  (loop [state initial-state]
+    (.draw-board! ux (:value state))
+    (let [command (.get-input ux state)
+          new-state (fsm-adv state command)]
+      (if (:accepted? new-state) 
+        (do 
+          (.draw-board! ux (:value state))
+          new-state)
+        (recur new-state)))))

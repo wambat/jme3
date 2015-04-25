@@ -1,5 +1,5 @@
 (ns gamejme3.datamodel.actors.proto
-  (:require []))
+  (:require [clojure.pprint :as pp]))
 
 (defn pack-attack-damage
   [unit-state world-state]

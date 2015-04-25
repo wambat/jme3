@@ -13,7 +13,8 @@
             scene.Node
             math.Vector3f
             math.ColorRGBA])
-  (:require [gamejme3.game :as game])
+  (:require [gamejme3.game :as game]
+            [gamejme3.text-game :as tgame])
   (:use clojure.pprint))
 
  
@@ -36,9 +37,14 @@
   (doto app
     (.stop)))
 
-(defn -main [& args]
+(defn launch-3d-app []
   (doto app
     (.setShowSettings false)
     (.setPauseOnLostFocus false)
     (.setSettings *app-settings*)
     (.start)))
+
+(defn -main [& args]
+  ;(launch-3d-app)
+  (tgame/main)
+  )
