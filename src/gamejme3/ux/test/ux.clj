@@ -1,5 +1,6 @@
 (ns gamejme3.ux.test.ux
   (:require [gamejme3.ux.ux-proto :as p]
+            [clojure.string :as st]
             [puget.printer :as pp]))
 
 (defn make-ux [io]
@@ -11,6 +12,9 @@
 
     (get-input [this state]
       (println "action N param N")
-      (-> state 
-          (assoc-in [:action] (read-string (read-line)))
-          (assoc-in [:action-params] (read-string (read-line)))))))
+      (let [s (st/split (read-line) #"\s" 2)
+            ret {:action (keyword (read-string (first s)))}
+            ret (if (> (count s) 1)
+                  (assoc ret :action-params (read-string (second s)))
+                  ret)]
+        ret))))
