@@ -3,6 +3,21 @@
 
 (def unit
   {:view "I"
+   :description "Infantry"
+   :stackable {:max 10}
+   :destructable {:health 1
+                  :vulnerable [:ground]}
+   :moveable {:points 6
+              :terrains {:planes 2
+                         :woods 2
+                         :hills 3
+                         :roads 1}}
+   :attacker {:basedamage 1
+              :range 0
+              :targets :ground}})
+
+(comment def unit
+  {:view "I"
    :stackable {:max 10}
    :destructable {:health 1
                   :vulnerable all-vulns
